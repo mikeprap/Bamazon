@@ -66,42 +66,39 @@ function start() {
                 }
             }
             
-        ])
-        .then(function (answer) {
-
-            if (answer >= stock_quanity){
-                howMany();
-            }
-
-
-
+        ]).then (function(answer){
+            connection.query("SELECT * FROM items WHERE ?", {id: answer.pickAChoice}, function(err, res){
+                var stock = res[0].stock_quanity;
+                var bought = answer.amount;
+                var amountOwed = res[0].price * bought;
+    
+                if(stock >= bought){
+                    console.log("we have " + stock + "in stock!");
+                    var itemLeft = stock - bought;
+                    connection.query("UPDATE items SET ? WHERE ?", [{stock_quanity: itemLeft}, {id: answer.pickAChoice}],
+                    function(err){
+                        if (err) throw err;
+                        console.log("Purchase complete");
+                        console.log("you owe $ " + amountOwed);
+                        loadProducts();
+                        
+                        
+                    })
+                        
+                    }
+                    else{
+                        console.log("sorry we dont have enough in stock!");
+                        loadProducts();
+                    
+                }
+    
+    
+    
+            });
         });
+    
+    
            
+
+
 }
-function howMany(){
-    inquirer
-    .prompt({
-        name: "itemNumber",
-        type: "input",
-        message: "How many would you like to buy?"
-    })
-    .then (function(answer){
-        connection.query("SELECT * FROM items WHERE ?", {id: answer.itemnumber}, function(err, res){
-            var stock = res[0].stock_quanity;
-            var bought = answer.itemNumber;
-
-            if(stock >= bought){
-                console.log("we have " + stock + "in stock!");
-                buyItem();
-                
-            }
-
-
-
-        })
-
-
-
-    })
-}
-
