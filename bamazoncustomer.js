@@ -48,7 +48,7 @@ function start() {
         })
         .then(function (answer) {
 
-            if (input === true){
+            if (answer >= stock_quanity){
                 howMany();
             }
 
@@ -65,9 +65,23 @@ function howMany(){
         message: "How many would you like to buy?"
     })
     .then (function(answer){
-        connection.query("SELECT")
+        connection.query("SELECT * FROM products WHERE ?", {id: answer.itemnumber}, function(err, res){
+            var stock = res[0].stock_quanity;
+            var bought = answer.itemNumber;
+
+            if(stock >= bought){
+                console.log("we have " + stock + "in stock!");
+                buyItem();
+                
+            }
+
+
+
+        })
 
 
 
     })
 }
+
+function buyItem();
