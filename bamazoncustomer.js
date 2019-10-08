@@ -30,12 +30,17 @@ function loadProducts(){
     connection.query("SELECT * FROM items", function(err, res){
         if(err)throw err;
 
+        console.log("Welcome to bamazon!");
+        console.log("----------------------------------------");
+        
+
         console.table(res);
+        start();
     })
 
     
 
-    start();
+    
     
 }
 
