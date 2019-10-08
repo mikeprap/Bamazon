@@ -29,9 +29,11 @@ connection.connect(function (err) {
 function loadProducts(){
     connection.query("SELECT * FROM items", function(err, res){
         if(err)throw err;
+
+        console.table(res);
     })
 
-    console.log(res);
+    
 
     start();
     
@@ -40,12 +42,31 @@ function loadProducts(){
 
 function start() {
     inquirer
-        .prompt({
+        .prompt([
+            {
             name: "pickAChoice",
             type: "input",
             message: "Hello pick an id to buy something",
+            validate:function(value){
+                if(isNaN(value)=== false){
+                    return true;
+                }
+                return false;
+            }
+        },
+            {
+                name: "amount",
+                type: "input",
+                message: "How many items would you like to purchase?",
+                validate:function(value){
+                    if (isNaN(value)=== false){
+                        return true;
+                    }
+                    return false;
+                }
+            }
             
-        })
+        ])
         .then(function (answer) {
 
             if (answer >= stock_quanity){
@@ -65,7 +86,7 @@ function howMany(){
         message: "How many would you like to buy?"
     })
     .then (function(answer){
-        connection.query("SELECT * FROM products WHERE ?", {id: answer.itemnumber}, function(err, res){
+        connection.query("SELECT * FROM items WHERE ?", {id: answer.itemnumber}, function(err, res){
             var stock = res[0].stock_quanity;
             var bought = answer.itemNumber;
 
@@ -84,4 +105,3 @@ function howMany(){
     })
 }
 
-function buyItem();
